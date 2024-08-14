@@ -1,0 +1,81 @@
+# Doc
+
+# StackActions 
+StackActions is an object containing methods for generating actions specific to stack-based navigators. Its methods expand upon the actions available in CommonActions.
+
+1. Replace :::
+The replace action allows to replace a route in the navigation state. It takes the following arguments:
+
+name - string - A destination name of the route that has been registered somewhere.
+params - object - Params to pass to the destination route.
+import { StackActions } from '@react-navigation/native';
+
+navigation.dispatch(
+  StackActions.replace('Profile', {
+    user: 'jane',
+  })
+);
+
+# useFocusEffect
+Sometimes we want to run side-effects when a screen is focused. A side effect may involve things like adding an event listener, fetching data, updating document title, etc. While this can be achieved using focus and blur events, it's not very ergonomic.
+# useIsFocused
+We might want to render different content based on the current focus state of the screen. The library exports a useIsFocused hook to make this easier:
+ 
+1. Complexity: useFocusEffect is more complex and is designed to handle side effects that need cleanup when the screen is unfocused. In contrast, useIsFocused is a simple boolean that tells you if the screen is focused.
+2. Use Case: Use useFocusEffect when you need to run and clean up side effects as the screen focus changes. Use useIsFocused when you only need to know whether the screen is focused or not, often for conditional rendering or simple logic.
+
+#  If i am passing a props from screen A to screen B , can i change data in data in screen B , how ? and will this change effect the value displayed in screen A
+ 
+1. In Screen B, you can change the data locally by using a useState hook. However, changing this state will not affect the original prop passed from Screen A.
+
+# If you want to update the value in Screen A, you must either:
+
+1. Use a <callback function> or useState function passed as a prop from Screen A to Screen B that allows Screen B to modify the state in Screen A.
+2. Use a global state management solution (like Redux or Context API) where the data is stored in a central location, and changes are reflected across all components.
+
+
+# File Structure :
+1. App.js
+Typical Content: A basic component that returns a simple UI (e.g., a "Hello World" text). This file is where you'll start building your app's interface.
+2. index.js
+Typical Content: Registers the main component (e.g., App) with AppRegistry to be rendered.
+3. node_modules/
+Libraries and dependencies for React Native, as well as other packages you install.
+4. package.json
+ The name, version, and dependencies of your project, along with scripts like start, build, and test.
+# android/
+Purpose: Contains the Android-specific code and configuration files.
+Important Files:
+1. AndroidManifest.xml     : Defines the structure and metadata for the Android app.
+2. build.gradle            : Configuration for the Android build system, defining how the app is compiled and built.
+3. MainActivity.java/MainActivity.kt:      The main entry point for the Android app, bridging the React Native code to the Android platform.
+# ios/
+Purpose: Contains the iOS-specific code and configuration files. This folder is essential for building and configuring the iOS version of your app.
+Important Files:
+1. Info.plist:    Configuration file for iOS that contains app settings like permissions and display name.
+2. AppDelegate.m/AppDelegate.swift:   The main entry point for the iOS app, bridging the React Native code to the iOS platform.
+3. Podfile:        Used for managing CocoaPods dependencies in the iOS project.
+
+7. babel.config.js
+Purpose: Configures Babel, the JavaScript compiler used by React Native. Babel allows you to use modern JavaScript features by transforming your code into a version that can be understood by all environments.
+Typical Content: Settings and plugins that Babel should use when transpiling your JavaScript code.
+8. .gitignore
+Purpose: Specifies which files and directories Git should ignore when committing code to a repository.
+Typical Content: Common files like node_modules/, android/ build files, and ios/ build files are ignored.
+9. metro.config.js (optional)
+Purpose: Configures the Metro bundler, which is the JavaScript bundler used by React Native.
+Typical Content: Custom configurations for Metro, if needed.
+10. assets/ (optional)
+Purpose: A folder to store static assets like images, fonts, and other media files.
+Typical Content: Images, icons, fonts, etc., that you want to bundle with your app.
+11. __tests__/ (optional)
+Purpose: Contains test files for your application. React Native uses Jest as its testing framework by default.
+Typical Content: Example test files, usually for the App.js file, to demonstrate how to write tests.
+
+------------------------------------------------------------------------------------------------------
+
+# package.json &&  package-lock.json
+
+1. package.json is a manifest that lists the direct dependencies and metadata of your project. It’s meant to be human-readable and is manually edited to add or remove dependencies.
+
+2. package-lock.json is a more detailed, automatically generated file that ensures consistent installations across environments by recording the exact versions of all installed packages, including their dependencies.

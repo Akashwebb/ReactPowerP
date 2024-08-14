@@ -1,0 +1,313 @@
+# React (React JS)   &&   React Native
+
+# Javascript :
+
+What is the difference between synchronous and asynchronous programming in JavaScript?
+
+# Real dom and virtual dom
+React uses the concept of a virtual DOM to manage updates to the real DOM efficiently.
+
+@@ When you make any change in your React code, the change is first reflected in the virtual DOM, not the real DOM. 
+
+1. State or Props Change:
+When you make a change in your React code, such as updating the state or receiving new props, React triggers a re-render of the component.
+
+2. Virtual DOM Update:
+React updates the virtual DOM with the new state or props. This means that React creates a new virtual DOM tree that represents the UI with the latest changes.
+
+3. Diffing:
+React compares the new virtual DOM tree with the previous virtual DOM tree to identify what has changed. This process is called "diffing."
+
+4. Reconciliation:
+Based on the differences identified during the diffing process, React determines the minimal set of changes that need to be made to the real DOM.
+
+5. Real DOM Update:
+React applies only the necessary changes to the real DOM. This efficient updating process is known as "reconciliation."
+
+6. UI Reflects Changes:
+The real DOM is updated with the minimal changes, and the user sees the updated UI
+
+# what is prototype 
+In JavaScript, a prototype is an object from which other objects inherit properties and methods. It is a fundamental concept in JavaScript's inheritance model, known as prototype-based inheritance. Each object in JavaScript has a prototype object, and when you try to access a property or method on an object that doesn't exist on the object itself, JavaScript will look for it on the object's prototype.
+
+# What is the purpose of Babel in a React Native project, and how is it typically configured?
+
+Answer:
+Babel's purpose in a React Native project is to transform modern JavaScript syntax and features into a form that can be executed by the JavaScript runtime environment of the mobile devices the app is intended to run on. This includes transforming JSX syntax, ES6 modules, and newer language features like async/await into compatible versions.
+
+Advanced Closures and Scope Management:
+
+# Explain how closures work in JavaScript and How do closures affect memory management?
+Explanation: Provide an example where closures are used to encapsulate private data and methods. Discuss how closures capture the lexical scope and implications for memory management and garbage collection.
+
+# Question: Describe the JavaScript event loop, the call stack, and the role of the event queue. 
+Explanation: Explain how the event loop processes synchronous and asynchronous code, how the call stack and event queue interact, and how different asynchronous constructs (callbacks, promises, async/await) are managed.
+
+
+
+Question: How would you diagnose and fix memory leaks in a JavaScript application? What tools and techniques would you use to profile and optimize performance in a complex application?
+
+Explanation: Discuss techniques for identifying memory leaks (e.g., using browser developer tools, heap snapshots) and strategies for fixing them (e.g., proper cleanup of event listeners, avoiding global variables). Explain performance optimization techniques like code splitting, lazy loading, and optimizing rendering performance.
+
+# React :
+
+1. I am doing an Api call and then i want that data to be store in my react application so that i dont do any more api call and use that data in my whole applictaion, how to do it
+--- now if a new item is added in the database , will this store data will also get updated or the data will remain same 
+
+# State Management: 
+How would you manage complex state in a React application, especially when multiple components need access to the same state data?
+
+=> Managing complex state in React can be done using local component state, context API, or state management libraries like Redux. When multiple components need access to the same state data, Redux is often preferred for its centralized store and predictable state management through actions and reducers.
+
+
+# Lifecycle Methods: 
+Explain the lifecycle methods of a React component and give examples of scenarios where componentDidMount and componentWillUnmount would be used.
+
+1. Mounting Phase
+These methods are called when an instance of a component is being created and inserted into the DOM:
+constructor()    render()       componentDidMount(): This method is invoked immediately after a component is mounted 
+
+2. componentDidMount: Used to perform actions after the component has mounted (e.g., fetching data from a server).
+
+3. componentDidUpdate(prevProps, prevState, snapshot): This method is called immediately after the update (re-render) occurs.
+
+4. Unmounting Phase() : This method is called when a component is being removed from the DOM:
+componentWillUnmount: Used for cleanup actions before the component is removed from the DOM (e.g., unsubscribing from external event listeners).
+
+# Performance Optimization: 
+What are some techniques you can use to optimize the performance of a React application, especially when dealing with large lists or complex rendering logic?
+
+=> Memoization: Using memo and useMemo to avoid unnecessary re-renders.
+Virtualization: Rendering only what's visible, especially for large lists, using libraries like react-virtualized.
+Code Splitting: Dynamically load parts of the application to reduce initial bundle size.
+
+<!-- ------------------------------------------------------------------------------------------------- -->
+
+# I am having a search box where when user is typing any alphabet , its hitting my database again and again , But I  want to delay an API call until the user stops typing for a certain period (debouncing) or to avoid making too many requests in a short time.   How can you do that  ??
+
+1. setTimeout Usage:
+setTimeout schedules a function to be called after a specified number of milliseconds.
+
+2. Effect Dependencies:
+In the useEffect hook, the dependency array ensures that the setTimeout is reset every time the dependencies change (e.g., query in the search example).
+
+3. Cleanup Function:   "clearTimeout"  to cancel the previous timeout whenever a new keystroke occurs.
+Always include a cleanup function to clear the timeout. This prevents memory leaks and ensures that the timeout is cleared if the component unmounts or the dependencies change before the timeout completes.
+
+4. State Updates:
+Remember that setTimeout does not guarantee exact timing, especially if the browser is busy with other tasks. Use it for non-critical delays, like showing/hiding UI elements or debouncing input.
+
+# EXAMPLE WITH EXPLANATION FOR ABOVE scenario
+
+import React, { useState } from 'react';
+import { TextInput, View, Text } from 'react-native';
+
+const SearchComponent = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  let debounceTimeout;
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+      setDebouncedSearchQuery(query);
+      // Call your API with debouncedSearchQuery
+      // Example: fetch(`https://api.example.com/search?q=${debouncedSearchQuery}`)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     // Handle API response
+      //   })
+      //   .catch(error => {
+      //     console.error('Error fetching data:', error);
+      //   });
+    }, 1000); // Adjust delay time as needed (e.g., 1000ms = 1 second)
+  };
+
+  return (
+    <View>
+      <TextInput
+        placeholder="Search"
+        onChangeText={handleSearch}
+        value={searchQuery}
+      />
+      <Text>Last Debounced Query: {debouncedSearchQuery}</Text>
+    </View>
+  );
+};
+
+export default SearchComponent; 
+
+
+1. When the user types in the search input (TextInput), the handleSearch function is called every time the text changes (onChangeText). This updates the searchQuery state immediately.
+
+2. The clearTimeout function cancels any previous timeouts that were set.
+
+3. Then, a new timeout is set using setTimeout with a delay of 1 second (1000 milliseconds). This means that the function inside setTimeout (which sets the debouncedSearchQuery state and triggers the API call) will execute after 1 second only if no new keystroke occurs during that period.
+
+<!-- ------------------------------------------------------------------------------------------------- -->
+
+# I have 10 users for my app , i want only one user to see a submit button , how u authenticate that using react js
+
+1. First, you need to authenticate users. You can use any authentication method or service (e.g., JWT, Firebase, Auth0). For simplicity, let's assume you have a user object that contains the user's information, including their role or ID.
+
+2. Store the authenticated user in your application's state.
+3. 
+
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+
+# When to use PROPS and when to use USE Context 
+
+=> When to Use Props:
+
+1. Passing Data Down the Component Tree:
+Use props when you need to pass data from a parent component to a child component.
+Props are suitable for simple and direct data flow, where the state is mostly local to a few components.
+2. Static or Non-Changing Data:
+Use props for data that doesn't change frequently or doesn't need to be shared across many components.
+
+=> When to Use Context:
+
+1. Global State:
+Use context for state that needs to be accessible by many components at different levels of the component tree.
+Context is useful for global state like themes, authentication, user settings, etc.
+2. Avoiding Prop Drilling:
+Use context to avoid prop drilling (passing props through many layers of components).
+
+=> When to Use Redux:
+
+1. Complex State Management:
+Use Redux for complex state management where multiple components across different parts of the application need to access and update the same state.
+2. Predictable State Changes:
+Redux is useful when you need a predictable state container with strict rules for how state can be updated.
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+
+
+# I am having a search box where when user is typing any alphabet , its hitting my database again and again , But I  want to delay an API call until the user stops typing for a certain period (debouncing) or to avoid making too many requests in a short time.   How can you do that  ??
+
+=> setTimeout Usage:
+
+setTimeout schedules a function to be called after a specified number of milliseconds.
+Effect Dependencies:
+
+In the useEffect hook, the dependency array ensures that the setTimeout is reset every time the dependencies change (e.g., query in the search example).
+Cleanup Function:
+
+Always include a cleanup function to clear the timeout. This prevents memory leaks and ensures that the timeout is cleared if the component unmounts or the dependencies change before the timeout completes.
+State Updates:
+
+Remember that setTimeout does not guarantee exact timing, especially if the browser is busy with other tasks. Use it for non-critical delays, like showing/hiding UI elements or debouncing input.
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+
+# Core Concepts of Redux
+
+1. Store:
+The store holds the entire state of the application. It is a single JavaScript object.
+There is only one store in a Redux application.
+<!--
+import { createStore } from 'redux';
+import rootReducer from './reducers'; 
+
+const store = createStore(rootReducer); -->
+
+2. Actions:
+Actions are plain JavaScript objects that describe a change in the state.
+Each action must have a type property that indicates the type of action being performed. Optionally, actions can have a payload property with additional data.
+
+3. Reducers:
+Reducers are pure functions that take the current state and an action as arguments and return a new state.
+The reducer specifies how the state changes in response to an action.
+
+4. Dispatch:
+Dispatch is a function used to send actions to the store.
+When an action is dispatched, the store calls the reducer with the current state and the action, and then updates the state based on the return value of the reducer.
+
+5. Selectors:
+Selectors are functions that extract specific pieces of state from the store.
+They help in accessing the state in a more modular and reusable way.
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- ------------------------------------------------------------------------------------------------- -->
+
+# Promise  and   Async/Await  
+
+1. Promises
+A Promise is an object representing the eventual completion or failure of an asynchronous operation.
+
+States: A Promise can be in one of three states: pending, fulfilled, or rejected.
+Methods:
+.then(): Used to specify what to do when the promise is fulfilled.
+.catch(): Used to handle any error that occurs during the execution of the promise.
+.finally(): Used to execute code after the promise is either fulfilled or rejected.
+
+Promises handle errors using .catch().
+
+2. Async/Await
+async/await is syntactic sugar over Promises, making asynchronous code look and behave more like synchronous code.
+
+async Function: Declares an asynchronous function, which automatically returns a Promise.
+await Expression: Pauses the execution of the async function until the Promise is resolved or rejected.
+
+async/await handle errors using try/catch blocks,
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+
+Question: Your React application has performance issues due to re-renders. What strategies would you employ to optimize performance?
+
+Answer:
+To optimize performance in a React application, you can use several strategies, including:
+
+Memoization with React.memo: Use React.memo to prevent unnecessary re-renders of functional components.
+useCallback and useMemo Hooks: Use useCallback to memoize callback functions and useMemo to memoize computed values.
+Key Prop: Ensure the use of a proper key prop in lists to help React identify which items have changed.
+Code Splitting: Use dynamic import and React's Suspense to split code and load components lazily.
+Avoid Inline Functions: Avoid defining inline functions inside render methods to prevent re-creation on each render.
+
+<!-- ------------------------------------------------------------------------------------------------- -->
+<!-- ------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------
+# React Native :============
+
+1. You are a React Native developer working on a new social media application where user can like and comment and share in the post and post consist of text , images etc , How can you maintain a real time update in such application and what are the ways for optimization so that the containt load faster ?
+
+=>  Real-Time Updates:
+
+@@  I would use Firebase Realtime Database or Firestore:. Firebase Realtime Database or Firestore can push updates to the app when data changes.
+@@  Alternatively, WebSockets can be used for a custom backend solution to push updates to the app in real-time.
+
+=>  Optimizing Performance:
+
+@@ Lazy Loading and Pagination  :: Use pagination or infinite scrolling to load posts incrementally.
+@@ Minimize Re-renders: Ensure components only re-render when necessary by using React.memo, useCallback, and useMemo.
+@@ Use a library like reselect to memoize selectors in Redux.
+@@ Optimize Images: Compress images and use formats like WebP for faster loading. Consider using libraries like react-native-fast-image for efficient image loading.
+
+
+3. Implementing Push Notifications
+Question: How would you implement push notifications in a React Native application?
+
+Explanation: Outline the process of using services like Firebase Cloud Messaging (FCM) for push notifications. Include steps like setting up FCM, integrating the react-native-firebase library, handling notification permissions, and managing different types of notifications (foreground, background).
+
+4. Handling Authentication
+Question: Describe how you would implement user authentication in a React Native application.
+
+Explanation: Explain the use of authentication services like Firebase Authentication, OAuth providers, or custom backend authentication. Discuss secure storage of tokens using AsyncStorage or more secure libraries like react-native-keychain, and handling different authentication states within the app.
+
+5. Accessing Device Features
+Question: How would you access and use device features like the camera, GPS, or contacts in a React Native app?
+
+Explanation: Talk about using libraries like react-native-camera for camera access, react-native-geolocation-service for GPS, and react-native-contacts for accessing contacts. Emphasize handling permissions properly using react-native-permissions and ensuring a smooth user experience.

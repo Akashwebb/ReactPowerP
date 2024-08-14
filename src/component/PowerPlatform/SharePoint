@@ -1,0 +1,187 @@
+# Create a new Site ::
+
+1. Go to Admin center
+2. Click on show all -->   Click on Sharepoint
+3. Click on Active Sites
+4. Click on +Create 
+5. Select type of site  ( Team Site  OR  Communication Site)
+6. Select template  ->   Click on Use template
+7. Enter your Site name
+8. Assign a site owner    and  Click on   Next
+
+If you want to change Site Admin or Site Member 
+
+1. Click on Membership from Top tab
+
+-----------------------------------------------------------------------------------------------------------
+
+# To import List Templet from on site to another Site ::
+
+# Old list ------ 
+1. Click on 3 dots and go to settings -> Copy "list Name" -> Click on  "Save list as template" 
+2. Enter "file name" and template name as copied in last step    AND  tick Include content  and click OK
+3. Select "list template gallery"  to download template ,  and that template will be downloaded to your local
+
+4. To Enable gallery feature use powerscript code   and  run it in powershell
+-- PnP PowerShell Module: Ensure you have the PnP PowerShell module installed.
+-- Permissions: You need appropriate permissions on both the source and destination sites.
+
+41. Install PnP PowerShell Module (if not already installed)
+    Install-Module -Name "PnP.PowerShell"
+
+42. Copy past and run this in Powershell 
+# Define parameters
+$sourceSiteUrl = "https://your-source-site-url"
+$destinationSiteUrl = "https://your-destination-site-url"
+$exportFolderPath = "C:\path\to\exportedLists"
+
+# Ensure the export folder exists
+if (-Not (Test-Path -Path $exportFolderPath)) {
+    New-Item -ItemType Directory -Path $exportFolderPath
+}
+
+# Connect to the source site
+Connect-PnPOnline -Url $sourceSiteUrl -UseWebLogin
+
+# Get all lists in the source site
+$lists = Get-PnPList
+
+# Export each list to a CSV file
+foreach ($list in $lists) {
+    if ($list.BaseTemplate -eq 101 -or $list.BaseTemplate -eq 100) {  # Check for Document Library (101) or Custom List (100)
+        $listItems = Get-PnPListItem -List $list.Title
+        $csvFilePath = Join-Path -Path $exportFolderPath -ChildPath "$($list.Title).csv"
+        $listItems | Export-Csv -Path $csvFilePath -NoTypeInformation
+        Write-Host "List '$($list.Title)' data exported to $csvFilePath"
+    } else {
+        Write-Host "Skipping list '$($list.Title)' due to incompatible template type."
+    }
+}
+
+# Disconnect from the source site
+Disconnect-PnPOnline
+
+# Connect to the destination site
+Connect-PnPOnline -Url $destinationSiteUrl -UseWebLogin
+
+# Import each CSV file to the corresponding list in the destination site
+$csvFiles = Get-ChildItem -Path $exportFolderPath -Filter *.csv
+
+foreach ($csvFile in $csvFiles) {
+    $listTitle = [System.IO.Path]::GetFileNameWithoutExtension($csvFile.Name)
+    
+    # Check if the list exists in the destination site, if not create it
+    $destList = Get-PnPList -Identity $listTitle -ErrorAction SilentlyContinue
+    if (-Not $destList) {
+        New-PnPList -Title $listTitle -Template GenericList -ErrorAction Stop
+        Write-Host "Created list '$listTitle' in destination site."
+    }
+
+    $csvData = Import-Csv -Path $csvFile.FullName
+    foreach ($item in $csvData) {
+        $itemProperties = @{}
+        foreach ($property in $item.PSObject.Properties) {
+            $itemProperties[$property.Name] = $property.Value
+        }
+        Add-PnPListItem -List $listTitle -Values $itemProperties
+    }
+    Write-Host "List '$listTitle' data imported to destination site."
+}
+
+# Disconnect from the destination site
+Disconnect-PnPOnline
+Write-Host "All lists and data have been exported and imported successfully."
+    
+
+
+# New list --------
+1. Go to home page   -->  Site settings 
+2. Click on List template ( present at 1st column)
+3. Select "Files Option" present at top left conner   ->   Choose file and upload a downloaded template   -> Click on Save
+4. Go to home page and click on  " +New " , And Click on App
+5. Click on "Classic Experience"  ( present in form of link )
+6. Search uploaded  "List Name"
+7. You will fine that file which is uploaded in last step 
+8. Add file name same as copied and click on Create
+
+---------------------------------------------------------------------------------------------------------
+
+# Azure connection with sharepoint  and  .NET
+
+1. Azure SQL Database: If you're using an Azure SQL Database, ensure it's created and properly configured.
+2. Create a REST API in Azure API Management or an Azure Function that exposes the data you want to retrieve  and  secure it with API keys 
+
+31. Using Power Automate (Flow): Create a flow with HTTP action to call your API or Logic App.
+32. Create an SPFx web part  and  Use the @pnp/sp library to interact with SharePoint lists.
+    Use the Fetch API or Axios to call your Azure API and retrieve data.
+
+@ To connect a .NET application with Azure, you typically use Azure services like Azure App Service, Azure Functions, Azure Storage, Azure SQL Database, and others. 
+
+
+# Team site and communication site :
+
+1. Team Sites typically have more open and collaborative permissions by default, allowing users to have more control and access. 
+Communication Sites, however, are designed for broader communication and often have more restrictive permissions.
+
+2. Team Site Customizations: Team Sites often come with default libraries, lists, and user permissions that align well with PnP operations.
+Communication Site Customizations: Communication Sites might have fewer customizations by default or might be configured differently, affecting how PnP commands interact with the site.
+
+------------------------------------------------------------------------------------------------------
+
+# How do you create a new SPFx web part?
+You use the Yeoman generator for SharePoint to scaffold a new project. The steps typically include:
+1. Download and Install Node.js (LTS version)
+2. Install Yeoman and Gulp  --- >>   npm install -g yo gulp
+3. Install the Yeoman generator    ---  >>   npm install -g @microsoft/generator-sharepoint
+4. Run yo @microsoft/sharepoint
+5. Answer configuration questions
+6. Write and deploy your web part  ( gulp serve )
+
+# Deploy the Web Part
+
+                          gulp clean
+1. Bundle the web part:   gulp bundle --ship
+2. Package the web part:  gulp package-solution --ship
+
+3. Upload to App Catalog 
+Go to https://<your-tenant-name>.sharepoint.com/sites/AppCatalog.
+
+4. Upload the package:
+Upload the .sppkg file from the sharepoint/solution folder to the App Catalog.
+
+5. Deploy the package:
+Once uploaded, select the package and click Deploy.
+Add the Web Part to a SharePoint Page
+Navigate to a SharePoint site.
+Click on setting and then a site content and Click on "+"  icon  --->  click on App -> Upload package in 
+Add your web part from the list of available web parts.
+
+# What is the significance of the manifest.json file in SPFx?
+The manifest.json file contains metadata about the web part, including its title, description, icon, and properties. It is used by SharePoint to display and manage the web part.
+1. Contains a unique identifier (GUID) for the component
+2. Defines the version of the component
+3. Specifies the entry point file and the main module to be loaded
+4. Defines configurable properties for the component
+
+
+# What is the purpose of the config.json file in an SPFx project?
+The config.json file contains configuration settings for the build process, including paths to source files, output directories, and build tasks.
+
+
+# How can you use third-party libraries in an SPFx project?
+You can install third-party libraries using npm and then import them into your SPFx components. SPFx also supports using module loaders and bundlers to include these libraries.
+
+# What is the role of the gulpfile.js in an SPFx project?
+The gulpfile.js contains tasks for building, packaging, and deploying the SPFx solution. It uses Gulp, a JavaScript task runner, to automate these processes.
+
+
+# Explain how SPFx supports modern JavaScript frameworks like React.
+SPFx is framework-agnostic, but it has excellent support for React. You can use React to create web parts and components within an SPFx solution. The Yeoman generator even provides an option to include React during project setup.
+
+
+# What are SharePoint Extensions and how do they differ from Web Parts?
+SharePoint Extensions allow you to customize the user experience within SharePoint. They include:
+Application Customizers (customize placeholders like header and footer)
+Field Customizers (customize how fields are displayed)
+Command Sets (add custom actions to list view toolbars)
+

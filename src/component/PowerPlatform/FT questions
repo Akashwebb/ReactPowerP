@@ -1,0 +1,175 @@
+# Tell me about your work experience related to Power Platform?
+Answer: My work experience with Power Platform involves developing solutions using Power Apps, Power Automate, and Power BI. I have built several custom business applications that automate workflows, improve data collection processes, and provide insightful analytics. For instance, I developed an asset management application using Power Apps and SharePoint, which allowed users to track and manage company assets efficiently. Additionally, I created workflows in Power Automate to automate the approval processes and notifications.
+
+# What are challenges you faced?
+Answer: Some challenges I faced include handling delegation issues with large datasets, managing permissions and security within Power Platform, dealing with limitations of connectors, and ensuring optimal performance of apps and flows. For example, when dealing with large SharePoint lists, I had to optimize queries to ensure they were delegable to avoid performance issues.
+
+# 2a. Total how many records you are maintaining?
+Answer: The number of records maintained varies by project but typically ranges from a few thousand to over a hundred thousand records, depending on the application's requirements and data source. For example, in a customer relationship management (CRM) app, we maintained over 50,000 customer records.
+
+# 2b. What components you used for developing applications?
+Answer: I have used various components such as Canvas Apps, Model-Driven Apps, Dataverse, SharePoint, Power Automate (Flows), Power BI, and connectors for integrating with external systems. For example, in a project management application, I used Canvas Apps for the user interface, Dataverse for storing project data, and Power Automate to send reminders and status updates.
+
+# What is recent project and tell me about it?
+Answer: My recent project involved creating a Power App for managing employee onboarding. The app integrated with SharePoint to store employee data, Power Automate to handle approval workflows, and Power BI for reporting. It streamlined the onboarding process, reducing the time required and improving data accuracy. The app included features like electronic forms, automated notifications, and dashboards for tracking onboarding progress.
+
+# What types of variables in PowerApps?
+Answer: There are three types of variables in PowerApps:
+Global Variables: Set using the Set function and available throughout the app.
+Context Variables: Set using the UpdateContext function and available only within the screen they are defined.
+Collections: Used to store a table of records and can be referenced across the app.
+Example:
+
+javascript
+Copy code
+// Global Variable
+Set(globalVar, "Hello World");
+
+// Context Variable
+UpdateContext({ contextVar: "Hello World" });
+
+// Collection
+ClearCollect(myCollection, [{ Name: "John" }, { Name: "Jane" }]);
+
+# What is delegation?
+Answer: Delegation is the process where the filtering and processing of data are done at the data source level rather than fetching all data to the client and then processing it. This is important for performance and scalability in Power Apps when dealing with large datasets. When a function is delegable, Power Apps sends the query to the data source to process the request, which reduces the amount of data transferred and improves performance.
+Example:
+
+javascript
+Copy code
+// Delegable query
+Filter(SharePointList, Status = "Active")
+
+# What are non-delegable functions?
+Answer: Non-delegable functions are those that cannot be processed at the data source level and thus require all data to be fetched to the client for processing. This can lead to performance issues when dealing with large datasets. Examples include LookUp, FirstN, Sort, and Filter with complex conditions.
+Example:
+
+javascript
+Copy code
+// Non-delegable query
+LookUp(SharePointList, StartsWith(Title, "A"))
+
+# If you use collection and it crossed 2000 limit, how you will perform delegation?
+Answer: If a collection exceeds the 2000 record limit and delegation is not possible, you can use pagination to fetch data in batches or optimize the query to ensure it is delegable. For example, using the In function with large lists can be non-delegable, so using indexed columns or refining the filter criteria can help.
+
+# I have a form with one form I want to create new record and update the existing record how?
+Answer: In PowerApps, you can use the Patch function to create a new record or update an existing record based on a condition. If the record exists, update it; if not, create a new one.
+Example:
+
+javascript
+Copy code
+// Patch function to create or update a record
+Patch(SharePointList, Defaults(SharePointList), { Title: "New Record" });
+Patch(SharePointList, LookUp(SharePointList, ID = 1), { Title: "Updated Record" });
+
+# Did you know ALM, what is your approach on developing application in PowerApps?
+Answer: Application Lifecycle Management (ALM) in PowerApps involves using solutions to manage the development, deployment, and maintenance of applications. My approach includes using environments for development, testing, and production, utilizing version control, and automating deployments with Power Platform Build Tools.
+
+# We have a solution in that there are some 10 flows, owners are 10 different users for flows. How will you migrate it to another environment, will we get any issues related to connections?
+Answer: When migrating flows to another environment, you might face issues related to connections and permissions. It's important to reconfigure the connections in the new environment and ensure that the users have the necessary permissions. Using environment variables and connection references can help manage these transitions.
+
+# How do you assign permissions for item level using Power Automate?
+Answer: You can assign item-level permissions in Power Automate using the "Grant access to an item or a folder" action for SharePoint. This allows you to set unique permissions for each item based on your requirements.
+
+# Are they limitations for SharePoint?
+Answer: Yes, SharePoint has limitations such as list view thresholds (5000 items), file size limits, column limits, and API request limits. It's important to design your applications considering these limitations to ensure optimal performance and functionality.
+
+# In SharePoint I have some records I'm trying to pull data but not able to view all records why?
+Answer: This issue might be due to the list view threshold limit of 5000 items. To overcome this, you can use indexed columns, create filtered views, or use delegation in Power Apps to handle large datasets.
+
+# How to send single mail to multiple people who are there in multiple person field in SharePoint?
+Answer: You can use Power Automate to iterate through the person field and send a single email to multiple recipients by concatenating their email addresses into a single string and using it in the "To" field of the email action.
+
+# What types of licenses are there?
+Answer: Power Platform offers various licenses including Power Apps Per App Plan, Power Apps Per User Plan, Power Automate Free, Power Automate Per User Plan, Power Automate Per Flow Plan, and Power BI licenses (Free, Pro, Premium).
+
+# E3, E5 and remaining all I don’t want these do you know about premium licenses?
+Answer: Premium licenses include Power Apps Per User Plan, Power Apps Per App Plan, Power Automate Per User Plan, Power Automate Per Flow Plan, and Power BI Premium. These licenses offer advanced features and higher capacity for usage.
+
+# I have data in datasource that data I want to populate in excel cell by cell which is having standard format without table format, how you will perform this?
+Answer: You can use Power Automate to populate data in an Excel file. Use the "Add a row into a table" action to add data into an Excel table and format it as required. If you need to populate cells without a table format, you might need to use Office Scripts or VBA.
+
+
+# Did you ever used any oracle related connectors for applications?
+Answer: Yes, I have used Oracle connectors in Power Apps and Power Automate to connect to Oracle databases for fetching and updating data.
+
+
+# Did you have experience on Dataverse?
+Answer: Yes, I have experience using Dataverse for storing and managing data in Power Apps. Dataverse provides a secure and scalable data storage solution with rich metadata and relationships, making it suitable for complex business applications.
+
+# I have 1 application developed by 1 user and 200 users are accessing, do we need premium licenses for all or only developer?
+Answer: All users who access a Power Apps application that uses premium connectors or features require a premium license. So, in this case, all 200 users would need a premium license.
+
+# Only 1(answer), but I have flows which are integrated from PowerApps which will be triggered by users not owner of flow?
+Answer: Flows triggered by users from Power Apps also require the users to have the appropriate Power Automate license if the flow uses premium connectors or features.
+
+# How you connected to client's on-premises?
+Answer: I connected to the client's on-premises data using the On-Premises Data Gateway, which securely connects Power Platform services to on-premises data sources.
+
+# Continuation of 22 question: Did you create those or client gave you?
+Answer: The On-Premises Data Gateway is typically set up by the client's IT team, but I have been involved in configuring and managing the gateways as part of the project implementation.
+
+#  of 23: But what is used to connect that?
+Answer: The On-Premises Data Gateway is used to connect on-premises data sources like SQL Server, SharePoint, Oracle, and others to Power Platform services.
+
+# While doing import and export what are the important things needed?
+Answer: Important considerations include data integrity, mapping fields correctly, handling relationships between entities, ensuring data types are consistent, and testing the import/export process in a non-production environment first.
+
+
+# While deployment what are the challenges you faced?
+Answer: Challenges during deployment include managing dependencies between components, ensuring all connections and environment variables are correctly configured, handling version control, and minimizing downtime.
+
+
+# You are using an application and suddenly it stops responding? what might be the cause? If it is a performance issue how do you handle it?
+Answer: Possible causes include network issues, server downtime, performance bottlenecks in the app, or exceeding usage limits. To handle performance issues, I would analyze the app's performance using monitoring tools, optimize queries and data retrieval, reduce non-delegable operations, and ensure efficient use of resources.
+
+
+# Do you have idea about running scripts on Excel (Continuation of 17)?
+Answer: Yes, scripts can be run on Excel using Office Scripts or VBA (Visual Basic for Applications). Office Scripts are particularly useful for automating tasks in Excel online.
+
+# How do we extract records from SharePoint when it exceeds limits. What type of issues will we face?
+Answer: When records exceed SharePoint limits, you can use indexed columns, create filtered views, and use delegation in Power Apps. Issues faced include performance degradation and potential throttling by SharePoint.
+
+# How do you display count of all data that is coming from SharePoint if a list has around 70-80k items?
+Answer: To display the count of items in a large SharePoint list, you can use a flow in Power Automate to calculate the count and store it in a separate list or variable, which can then be displayed in Power Apps or Power BI.
+
+
+# Do you have idea on Dataflows?
+Answer: Yes, Dataflows are used in Power BI and Power Apps to extract, transform, and load (ETL) data from various sources into Dataverse or Power BI for analysis and reporting.
+
+
+# What are Power Queries?
+Answer: Power Queries are a data connection technology that enables users to discover, connect, combine, and refine data across a wide variety of sources. Power Queries are commonly used in Power BI and Excel.
+
+# Have you worked on Business Process Flows?
+Answer: Yes, Business Process Flows in Power Apps guide users through a defined process, ensuring consistency and efficiency. They are used to enforce business rules and streamline workflows.
+
+# What is the use of environment variables?
+Answer: Environment variables are used to store configuration settings that can be referenced across different components of a solution, making it easier to manage and change settings without modifying the actual components.
+
+# Explain process of deployment from one environment to another?
+Answer: Deployment involves exporting the solution from the source environment and importing it into the target environment. This includes verifying dependencies, configuring environment variables, and testing the solution post-deployment.
+
+# How can we remove dependencies?
+Answer: Dependencies can be removed by refactoring components to decouple them, using environment variables for configuration, and ensuring that each component is self-contained and does not rely on hard-coded references.
+
+# Suppose we are sending an email where connection is set to system account. But still when user triggers the flow, email is being sent from that specific user's account? What do we have to check in this case?
+Answer: Check the flow connections and ensure that the correct connection (system account) is being used in the email action. Additionally, verify the flow's run-only permissions and ensure the system account has the required permissions.
+If we have some code where both delegable and non-delegable functions are used, what will be the outcome?
+
+Answer: If both delegable and non-delegable functions are used, only the delegable parts of the query will be processed at the data source, while the non-delegable parts will be processed on the client side. This can lead to partial delegation and potential performance issues.
+What is the return type of the Lookup function in PowerApps?
+
+Answer: The LookUp function in PowerApps returns a single record that matches the specified criteria. If no record matches, it returns blank.
+When should collections be used?
+
+Answer: Collections should be used when you need to store and manipulate a table of records locally within the app. They are useful for scenarios where you need to perform operations on a set of records without repeatedly querying the data source.
+State some of the limitations of SharePoint.
+
+Answer: Limitations of SharePoint include list view threshold (5000 items), file size limits, column limits, API request limits, and performance issues with large lists. Additionally, certain complex queries may not be delegable.
+Mention some ways in which we can avoid delegation?
+
+Answer: To avoid delegation issues, use delegable functions and operators, filter data at the source, use indexed columns in SharePoint, and break down complex queries into simpler, delegable parts.
+What is the maximum number of records that can be retrieved from a database table?
+
+Answer: The maximum number of records that can be retrieved depends on the data source and the context of the query. For example, in Power Apps, the default limit for non-delegable queries is 500 records, but it can be increased to 2000. For delegable queries, there is no specific limit, but performance considerations should be taken into account.

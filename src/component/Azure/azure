@@ -1,0 +1,42 @@
+# Azure 
+
+# Compute Services
+1. Virtual Machines (VMs): Create Linux and Windows virtual machines in seconds.
+2. Azure App Services: Build and host web apps, RESTful APIs, and mobile backends.
+3. Azure Functions: Event-driven, serverless compute service.
+4. Azure Kubernetes Service (AKS): Managed Kubernetes container orchestration service.
+
+# Storage Services
+1. Azure Blob Storage: Object storage solution for the cloud.
+2. Azure Files: Managed file shares accessible via the SMB protocol.
+3. Azure Disk Storage: High-performance SSD and HDD storage for virtual machines.
+
+# Database Services
+1. Azure SQL Database: Managed relational database service.
+2. Azure Cosmos DB: Globally distributed, multi-model database service.
+3. Azure Database for MySQL/PostgreSQL: Managed database services for MySQL and PostgreSQL.
+
+# Networking Services
+1. Azure Virtual Network (VNet): Build a secure, isolated network in the cloud.
+2. Azure Load Balancer: Distribute incoming traffic across multiple virtual machines.
+3. Azure Application Gateway: Load balancing and application firewall service.
+
+# AI and Machine Learning
+1. Azure Machine Learning: Build, train, and deploy machine learning models.
+2. Cognitive Services: Pre-built APIs for vision, speech, language, and decision-making.
+3. Azure Bot Service: Build intelligent, enterprise-grade bots.
+
+# Data Analytics
+1. Azure Synapse Analytics: Integrated analytics service that accelerates time to insight.
+2. Azure Databricks: Fast, easy, and collaborative Apache Spark-based analytics service.
+3. Azure HDInsight: Fully-managed cloud service to handle big data analytics.
+
+# DevOps and Development Tools
+1. Azure DevOps: Services for teams to share code, track work, and ship software.
+2. GitHub Actions for Azure: Automate workflows directly from your repository.
+3. Visual Studio and Visual Studio Code: Integrated development environments (IDEs) for building Azure applications.
+
+# Security and Identity
+1. Azure Active Directory (Azure AD): Identity and access management service.
+2. Azure Security Center: Unified security management and advanced threat protection.
+3. Azure Key Vault: Manage keys, secrets, and certificates.

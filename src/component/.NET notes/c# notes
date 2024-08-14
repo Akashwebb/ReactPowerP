@@ -1,0 +1,60 @@
+Ergonomics : 
+
+
+
+https://www.youtube.com/watch?v=8rCc8Rkep9E
+
+
+
+
+
+
+# C# is pronounced "C-Sharp".
+1. It is an object-oriented programming language created by Microsoft that runs on the .NET Framework.
+2. An IDE (Integrated Development Environment) is used to edit and compile code.
+
+using System;
+
+namespace HelloWorld
+{
+  class Program
+  {
+    public static void Main(string[] args)
+    {
+      Console.WriteLine("Hello World!");    
+    }
+  }
+}
+
+Line 1: using System means that we can use classes from the System namespace.
+
+Line 2: A blank line. C# ignores white space. However, multiple lines makes the code more readable.
+
+Line 3: namespace is used to organize your code, and it is a container for classes and other namespaces.
+
+Line 4: The curly braces {} marks the beginning and the end of a block of code.
+
+Line 5: class is a container for data and methods, which brings functionality to your program. Every line of code that runs in C# must be inside a class. In our example, we named the class Program.
+
+const users = [
+  { id: 1, name: 'Alice', age: 25 },
+  { id: 2, name: 'Bob', age: 20 },
+  { id: 3, name: 'Charlie', age: 30 },
+  { id: 4, name: 'David', age: 25 }
+];
+
+
+function filterUsersByAge(users, targetAge) {
+  return users.filter(user => {
+    for (const key in user) {
+      if (key === 'age' && user[key] === targetAge) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
+
+const result = filterUsersByAge(users, 25);
+console.log(result);

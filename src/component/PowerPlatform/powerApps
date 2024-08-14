@@ -1,0 +1,289 @@
+@ Display data from Gallery into the form --------
+
+1. Verticle Gallery ( to display titte subtitle )  -- connect to db directly 
+2. verticle gallery will have all the data fetched from sharepoint 
+3. on click of arrow , it should display the whole data into the form in way of edit form 
+4. Select the form and at left top dropDown select "ITEMS" and   fx( GalleryName.Selected )
+
+
+@ Change the Sub-title (first name ) in Verticle gallery to Last name --------
+1. Select the first name box 
+2. left top , select TEXT  and  fx  ( ThisItem.LastName )
+
+
+@ Filter display data in the table ----------
+
+    Filter(
+            NewList,
+            Department.Value = "HR" 
+          )
+
+@ Hint Text  ----- PlaceHolder
+
+@@ Input Box  Not a Form ,  To get the particular sharepoint database value into that input Box ---------
+      
+   1. Click on Input box
+   2. Default value ::   --- gallery.Selected.FirstName
+  
+
+@@@@    counter  ::------------------------------
+  
+  Input box  :  Default -->  Text(count)
+    +        :  Onselect --> UpdateContext({count: count + 1})
+    -        :  Onselect --> UpdateContext({count: count - 1})
+
+@@@@    Odd/ Even ::-----------------------
+
+ Button  ::     Onselect -->  UpdateContext({count: count + 1})  &
+                              If(Mod(count, 2) = 0, Set(varResult, "I am even"), Set(varResult, "I am odd"))
+ InputBox ::    Text -- >  varResult
+
+@@@@      SubmitForm(Form1); 
+  If(Not IsEmpty(Form1.Errors), Notify("Error saving record", NotificationType.Error), 
+  Notify("Record created successfully", NotificationType.Success))
+
+
+@@ Variables ::---------
+
+   1. Global Variable ::  Accessable to entire application , accross the all screens ....
+    Set( variableName, "value" )
+
+   2. Context Variable ::  Specific to a particular screen ---
+     UpdateContext({
+                    ScreenTitle: "Value"
+                   })
+   Button on select   ::: To have a multiple updatecontext on single click ----------------------
+
+                         UpdateContext({ x: x+2});
+                         UpdateContext({ texting: "value of X is"  & x & ""  });
+
+   3. Collection :: collect ( 
+                              Tasks,                   // Name
+                                 {
+                                   Task1 : "hello",
+                                   Task2 : "Hello2 "
+                                  }
+                                 {
+                                   .....
+                                  }
+                             )
+
+                                  ;
+UpdateContext({countDelete: countDelete+1})
+
+// -------------------------------------Adding a list in collection -------
+
+Adding a list in column ::           ClearCollect(
+                                        coll,
+                                        NewList  // list name
+                                            )
+                                                              
+
+                                    ClearCollect(
+    							        coll,
+    							        Filter(
+    							        NewList,
+    							        LastName = "Singh"
+   								          )
+								         )
+
+
+EDIT FORM :::: ----------------------------------------
+  
+1.  Select(Parent);
+  UpdateContext({countEdit: countEdit + 1 });
+  Collect(                   // COLLECTING   "ThisTtem"  values in  Collection name as  "data"
+        data,
+        ThisItem
+   )
+
+2.   First(data).Ref    //To get collection data in single input box ::---- data is a name of collection and  Ref is a list name 
+
+3.    Clear(data);       // Clearing the collection so that it have one  list row at a time 
+
+4.    Patch(DataSource, Defaults(DataSource), { Field1: Value1, Field2: Value2 })     // create new record
+
+         DataSource: The name of the data source you want to modify.
+         Defaults(DataSource): Used to specify that a new record should be created.
+         { Field1: Value1, Field2: Value2 }: A record containing the fields and values you want to set.
+
+      
+      Patch(Orders, LookUp(Orders, OrderID = 123), { CustomerName: "Jane Doe", OrderDate: Today() })  // update record
+
+
+      Patch(
+        SubMouCapital,
+        LookUp(  SubMouCapital,  ID = First(data).ID ),   // Filtering the ID
+         {
+         Title: "Mou1",
+         Ref:Value(RefBox_4.Text),
+         ProjectPhase:PhaseBox_4.Text,
+         PhaseAsA:Value(TotalBox_4.Text),
+         EstimateCse:Value(CseBox_4.Text),
+         Instrumentations:InstrumentationBox_4.Text,
+         Imaging:ImagingBox_4.Text,
+         SystemIntrigation:SystemBox_4.Text,
+         Lab:LabBox_4.Text,
+         Physicist:PhysicistBox_4.Text
+
+    }
+    )
+
+@@@ Edit  &&&   View   ------
+
+  1. Display a data into verticle gallery on "Screen2" and put  View icon and  Edit icon
+  2. Screen2  "OnVisible" property  Fx -- : Set(formViewEdit,false); 
+
+  3. View icon -- Fx :  
+                        Select(Parent);              // select that particular row data
+                        Set(formViewEdit,true);      // setting variable formViewEdit as true
+                        Navigate(Screen3)            
+
+   4. Edit icon -- Fx :
+                        Select(Parent);              // formViewEdit  is false by default
+                        Navigate(Screen3)                     
+   
+   5.  "Screen3" :  Insert Form with data as connector and input boxes will be created
+   6.   Form  "DefaultMode" property   Fx -- :   If(formViewEdit=true,FormMode.View,FormMode.Edit)
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Validation of Fields and running PATCH  ::  =============
+
+If(
+    /* Conditions for all fields are met */
+    And(
+        /* Validation condition for TextInput1 */
+        IsNumeric(TextInput1.Text),
+        Len(TextInput1.Text) > 0,
+        
+        /* Validation condition for TextInput2 */
+        IsNumeric(TextInput2.Text),
+        Len(TextInput2.Text) > 0,
+        
+        /* Validation condition for TextInput3 */
+        IsNumeric(TextInput3.Text),
+        Len(TextInput3.Text) > 0
+    ),
+    
+    /* If all conditions are met, then Patch the data */
+    Patch(
+        /* Your data source */,
+        Defaults(/* Your data source */),
+        {
+            /* Specify the fields and values to patch */
+            Field1: TextInput1.Text,
+            Field2: TextInput2.Text,
+            Field3: TextInput3.Text
+        }
+    ),
+    
+    /* Optional: Provide feedback or take other actions if conditions aren't met */
+    Notify("Please fill in all fields with valid numeric values.", NotificationType.Error)
+)
+
+Value(RefBox_7.Text)
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+@@@ PeoplePicker ::
+ 
+ 1. Connector :  "Office365Users"
+ 2. Screen4  : ComboBox  "Items" property Fx -- : Office365Users.SearchUser({searchTerm:ComboBox1.SearchText,top:10})
+ 3. Select combo box and in  Display (right side bar) ,  select Field -->  Edit
+ 4. Change "DisplayField" to  "DisplayName"
+
+
+File UPLOAD ------------------------------------------------------------ Using power apps 
+
+1.  Add a form and connect it with any sharepoint list , In form we will get  Attachment file option  -- COPY IT
+
+2.  Open MICROSOFT GRAPH EXPLORER and  In search box , 
+     enter "sites"  -> Click on POST -> open SharePoint Sites(7) -> click on " *(#3) -- get sharepoint based on relative path" 
+     At top right we will get  https://graph.microsoft.com/v1.0/sites/{host-name}:/{server-relative-path}
+
+3.  From list url : https://smrtofcnxt.sharepoint.com/sites/TestPOCTeamSIte/FileDoc/Forms/AllItems.aspx 
+      {host-name}  :         smrtofcnxt.sharepoint.com
+    {server-relative-path} : sites/TestPOCTeamSIte
+    On run Query :  "id": "smrtofcnxt.sharepoint.com,cf184993-3ca5-4be0-9ede-dd391ef9d1eb , e9c36065-c8a0-4acf-8ed4-0ace52242d2d",
+    WHERE  SITE ID : cf184993-3ca5-4be0-9ede-dd391ef9d1eb
+
+4. Click on " *(#2) -- enemute the documnet library" and in URL replace *root* with  Site ID 
+   WE WILL GET ALL LIST AND LIBRARIES IN THAT SITE
+   search for your LIBRARY and copy its LIBRARY ID :   "id": "b!k0kYz6U84Eue3t05HvnR62Vgw-mgyM9KjtQKzlIkLS2p_GcAs7ZSRZRTZOSrZUVO",
+
+5.  *(#2) -- enemute the documnet library  ::   "https://graph.microsoft.com/v1.0/sites/cf184993-3ca5-4be0-9ede-dd391ef9d1eb/drives/b!k0kYz6U84Eue3t05HvnR62Vgw-mgyM9KjtQKzlIkLS2p_GcAs7ZSRZRTZOSrZUVO/root"
+
+6. Go inside modify permission ==> Files.ReadWrite.All ( Concent ) 
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# COMPONENT ::--------------------
+
+1. Create component "Sidebar"  and a new custom propert as asideFields of "Table"  Type
+   asideFields   Fx-- :  
+   Table(
+    {naming:"page1" , navigatetoscreen:page1},
+    {naming:"page2" , navigatetoscreen:page2}
+    )
+  
+ 2. Create gallery in "Sidebar" component  and   Fx -- :  SideBar.asideFields
+ 3. Gallery  icon " > "  onClick  Fx -- :  Navigate(ThisItem.navigatetoscreen)    // Navigate to different page1
+ 4. Import Custom Component to different pages
+
+ -------------------------------------------------------------------------------------------------------------------
+
+# SOLUTIONS -----------------------------
+
+1. Create a Solution 
+2. From top of Solution , create new app
+3. Click on new in solution page , and more..  ,  and create Environment variable "xx" for  --Site first 
+4. Similarly , create Env variable for  --List and select site as "xx".
+5. Now solution is created
+
+6. export it and download it 
+7. import it into another site and click next next and change the list name in client environment 
+  
+
+In Power Apps, solutions are containers for managing and packaging sets of components like apps, flows, entities, and other customizations.
+These solutions can be categorized into two main types: managed solutions and unmanaged solutions.
+
+Managed Solutions:
+Sealed Components: When you package components into a managed solution and import it into another environment, 
+the components become sealed. This means that the components cannot be modified directly in the target 
+environment where the solution was imported.
+
+Unmanaged Solutions:
+Editable Components: Components included in an unmanaged solution are editable directly in the environment
+ where the solution is imported. This means you can make changes to the components after importing the 
+ solution.
+
+-------------------------------------------------------------------------------------------------------------
+
+# Delegation: 
+This means that PowerApps can delegate data processing to the data source. 
+When an operation is delegated, the data source performs the operation, and only the relevant data 
+is sent back to the app. This is essential for working with large data sets, as it improves performance 
+and reduces the amount of data transferred over the network.
+Example  ::---------
+Filter, Lookup , Sort function , Sum, Average, Max, Min on the data source.
+
+# Non-Delegation: 
+This means that PowerApps cannot delegate the data processing to the data source, and instead, 
+it retrieves all data from the source to the client and processes it locally. 
+This can lead to performance issues and is not suitable for large data sets.
+Example ::-------------
+Search , 
+
+
+
+
+
+
+
+
+
+
+
+

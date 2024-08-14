@@ -1,0 +1,227 @@
+# Code snippet 
+
+# useCallback: The handleSelect function is memoized using useCallback, ensuring that the function reference does not change unless its dependencies change. This prevents unnecessary re-renders of ListItem.
+
+# useMemo: The memoizedItems array is memoized using useMemo. This ensures that the array is only re-created when either items or selectedItemId changes, preventing unnecessary recalculations and re-renders of the list items.
+
+# React.memo: The ListItem component is wrapped in React.memo to prevent re-rendering unless its props change. This, combined with useCallback and useMemo, optimizes performance by minimizing re-renders.
+
+@@  The code demonstrates how to optimize performance with useCallback and useMemo in React Native. The ListItem components are memoized to prevent unnecessary re-renders, and the selection state is efficiently managed and displayed.
+
+
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, Text, FlatList, Button } from 'react-native';
+
+const ListItem = React.memo(({ item, onPress }) => {
+  console.log('Rendering ListItem', item.id);
+  return (
+    <View>
+      <Text>{item.name}</Text>
+      <Button title="Select" onPress={() => onPress(item.id)} />
+    </View>
+  );
+});
+
+const App = () => {
+  const [items, setItems] = useState([
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' },
+  ]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const handleSelect = useCallback((id) => {
+    setSelectedItemId(id);
+  }, []);
+
+  const memoizedItems = useMemo(() => {
+    return items.map((item) => ({
+      ...item,
+      selected: item.id === selectedItemId,
+    }));
+  }, [items, selectedItemId]);
+
+  return (
+    <FlatList
+      data={memoizedItems}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => <ListItem item={item} onPress={handleSelect} />}
+    />
+  );
+};
+
+export default App;
+
+
+----------------------------------------------------------------------------------------------------
+
+# useMemo: The memoizedCondition is calculated based on the count state. It evaluates to true if count is greater than 5, and false otherwise. This ensures that the condition is only recalculated when count changes, optimizing performance.
+
+# ConditionalComponent: The component logs "ConditionalComponent rendered" each time it renders and displays a message based on the memoizedCondition.
+
+# When the "Increment Count" button is pressed, count increases and memoizedCondition is recalculated. If count exceeds 5, ConditionalComponent will display "Condition is true".
+
+# When the "Toggle Other State" button is pressed, otherState changes but memoizedCondition remains the same, so ConditionalComponent does not re-render, demonstrating the performance benefit of using useMemo.
+
+import React, { useState, useMemo } from 'react';
+import { View, Button, Text } from 'react-native';
+
+const ConditionalComponent = ({ condition }) => {
+  console.log('ConditionalComponent rendered');
+  return <Text>{condition ? 'Condition is true' : 'Condition is false'}</Text>;
+};
+
+const App = () => {
+  const [count, setCount] = useState(0);
+  const [otherState, setOtherState] = useState(false);
+
+  const memoizedCondition = useMemo(() => {
+    return (count % 2 === 0) || (count % 3 !== 0 && count > 4);
+  }, [count]);
+
+  
+  const handleButtonPress = () => {
+    switch (count) {
+      case 1:
+      case 2:
+        
+        setCount(count + 1);
+        setCount(count + 2);
+        setOtherState(pre => pre);
+        break;
+      case 3:
+      case 4:
+        setCount(count + 1);
+        setCount(pre => pre + 3);
+        setOtherState(pre => !pre);
+        break;
+      default:
+        setCount(count + 1);
+        setCount(count + 1);
+        setOtherState(pre => !pre);
+        break;
+    }
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Count: {count}</Text>
+      <Text>Other State: {otherState ? 'true' : 'false'}</Text>
+      <Button title="Increment & Toggle" onPress={handleButtonPress} />
+      <ConditionalComponent condition={memoizedCondition} />
+    </View>
+  );
+};
+
+export default App;
+
+First Click:
+Count: 1
+Other State: true
+Conditional Component: "Condition is false"
+Console: "ConditionalComponent rendered"
+
+Second Click:
+Count: 3
+Other State: true
+Conditional Component: "Condition is false"
+Console: "ConditionalComponent rendered"
+
+Third Click:
+Count: 7
+Other State: false
+Conditional Component: "Condition is true"
+
+
+----------------------------------------------------------------------------------------------------------
+
+# The handleClick function attempts to update the state twice in succession. However, since state updates are asynchronous, the second setCount does not consider the updated state from the first call, resulting in only a single increment.
+
+import React, { useState } from 'react';
+import { View, Button, Text } from 'react-native';
+
+const StateUpdate = () => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount(count + 1);
+    setCount(count + 1);
+  };
+
+  return (
+    <View>
+      <Button title="Increase Count" onPress={handleClick} />
+      <Text>Count: {count}</Text>
+    </View>
+  );
+};
+
+export default StateUpdate;
+
+-----------------------------------------------------------------------------------------------------
+
+# This application allows users to dynamically add new input fields to a form. 
+The inputs state variable holds the values of all input fields. 
+The addInput function adds a new empty input field, and the handleChange function updates 
+the value of a specific input field based on user input. The form is rendered inside a View component, 
+with each input field represented by a TextInput component, and a Button component that adds 
+new input fields when pressed.
+
+import React, { useState } from 'react';
+import { View, TextInput, Button } from 'react-native';
+
+const App = () => {
+  const [inputs, setInputs] = useState(['']);
+
+  const addInput = () => {
+    setInputs([...inputs, '']);
+  };
+
+  const handleChange = (text, index) => {
+    const newInputs = inputs.slice();
+    newInputs[index] = text;
+    setInputs(newInputs);
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      {inputs.map((input, index) => (
+        <TextInput
+          key={index}
+          value={input}
+          onChangeText={(text) => handleChange(text, index)}
+          placeholder={`Input ${index + 1}`}
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10 }}
+        />
+      ))}
+      <Button title="Add Input" onPress={addInput} />
+    </View>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+
+
+# when we use native module
+
+Native modules in React Native are used when you need to leverage platform-specific functionality that is not available through the standard React Native APIs. They allow you to write custom native code in Java (for Android) and Objective-C/Swift (for iOS), which can then be called from your JavaScript code.
+
+# When to Use Native Modules
+
+1. Accessing Platform-Specific APIs:
+If you need to access device features that are not exposed by React Native, such as certain sensors, background services, or platform-specific APIs, you can create a native module.
+
+2. Performance-Critical Operations:
+When certain operations are too slow or resource-intensive to be handled in JavaScript, moving them to native code can significantly improve performance.
+
+3. Using Existing Native Libraries:
+If there is an existing native library or SDK that you want to use in your React Native app, you can create a bridge to use it.
+
+4. Custom UI Components:
+When you need to implement a custom UI component that is not possible or practical with React Native's existing components, you can create it natively.

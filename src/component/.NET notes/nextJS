@@ -1,0 +1,12 @@
+# nextJS
+
+1. Next.js is a React framework that provides a set of tools and features to build server-rendered React applications with ease. It enhances the capabilities of React by adding features such as server-side rendering (SSR), static site generation (SSG), and API routes.
+
+# When to Use Next.js
+SEO Optimization: When you need better SEO, Next.js's SSR capabilities can provide fully-rendered HTML to search engines, improving indexing and ranking.
+
+Performance: For applications that require fast load times and improved performance, the combination of SSR and SSG ensures that your content is delivered quickly.
+
+User Experience: When you want to enhance the user experience with features like fast refresh and optimized images, Next.js provides tools to improve performance and responsiveness.
+
+Full-Stack Development: When you need to create a full-stack application, Next.js's API routes allow you to build backend functionality without a separate server.
